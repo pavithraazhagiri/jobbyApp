@@ -1,6 +1,7 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import {Redirect} from 'react-router-dom'
+import './index.css'
 
 class Login extends Component {
   state = {username: '', password: '', errorMsg: ''}
@@ -16,8 +17,10 @@ class Login extends Component {
   renderUsernameField = () => {
     const {username} = this.state
     return (
-      <div>
-        <label htmlFor="usernameId">USERNAME</label>
+      <div className="username-container">
+        <label htmlFor="usernameId" className="username-label">
+          USERNAME
+        </label>
         <br />
         <input
           type="text"
@@ -25,6 +28,7 @@ class Login extends Component {
           id="usernameId"
           value={username}
           onChange={this.onChangeUsername}
+          className="username-input"
         />
       </div>
     )
@@ -33,8 +37,10 @@ class Login extends Component {
   renderPasswordField = () => {
     const {password} = this.state
     return (
-      <div>
-        <label htmlFor="passwordId">PASSWORD</label>
+      <div className="username-container">
+        <label htmlFor="passwordId" className="username-label">
+          PASSWORD
+        </label>
         <br />
         <input
           type="password"
@@ -42,6 +48,7 @@ class Login extends Component {
           id="passwordId"
           value={password}
           onChange={this.onChangePassword}
+          className="username-input"
         />
       </div>
     )
@@ -76,16 +83,23 @@ class Login extends Component {
     }
     const {errorMsg} = this.state
     return (
-      <div>
-        <form onSubmit={this.validate}>
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/logo-img.png"
-            alt="website logo"
-          />
-          {this.renderUsernameField()}
-          {this.renderPasswordField()}
-          <button type="submit">Login</button>
-          <p>{errorMsg}</p>
+      <div className="login-container">
+        <form onSubmit={this.validate} className="form-container">
+          <div className="login-image-container">
+            <img
+              src="https://assets.ccbp.in/frontend/react-js/logo-img.png"
+              alt="website logo"
+              className="login-image"
+            />
+          </div>
+          <div className="login-fields-container">
+            {this.renderUsernameField()}
+            {this.renderPasswordField()}
+            <button type="submit" className="login-button">
+              Login
+            </button>
+            <p className="login-errormsg">{errorMsg}</p>
+          </div>
         </form>
       </div>
     )

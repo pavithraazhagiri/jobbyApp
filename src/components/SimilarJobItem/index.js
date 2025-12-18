@@ -1,6 +1,7 @@
-import {FaRegStar} from 'react-icons/fa'
-import {IoLocationOutline} from 'react-icons/io5'
-import {BsBriefcase} from 'react-icons/bs'
+import {IoStar} from 'react-icons/io5'
+import {MdLocationOn} from 'react-icons/md'
+import {BsBriefcaseFill} from 'react-icons/bs'
+import './index.css'
 
 const SimilarJobItem = props => {
   const {details} = props
@@ -13,26 +14,32 @@ const SimilarJobItem = props => {
     rating,
   } = details
   return (
-    <li>
-      <div>
-        <img src={companyLogoUrl} alt="similar job company logo" />
-        <div>
-          <h1>{title}</h1>
-          <div>
-            <FaRegStar />
-            <p>{rating}</p>
+    <li className="similar-job-each-item">
+      <div className="job-item-details-logo-title-container">
+        <img
+          src={companyLogoUrl}
+          alt="similar job company logo"
+          className="similar-jobs-company-logo"
+        />
+        <div className="job-item-details-title-rating-container">
+          <h1 className="job-item-details-title">{title}</h1>
+          <div className="job-item-details-rating-container">
+            <IoStar className="job-item-details-rating-icon" />
+            <p className="job-item-details-rating-description">{rating}</p>
           </div>
         </div>
       </div>
       <div>
-        <h1>Description</h1>
-        <p>{jobDescription}</p>
+        <h1 className="job-item-details-description-heading">Description</h1>
+        <p className="job-item-details-job-description">{jobDescription}</p>
       </div>
-      <div>
-        <IoLocationOutline />
-        <p>{location}</p>
-        <BsBriefcase />
-        <p>{employmentType}</p>
+      <div className="job-item-details-location-type-container">
+        <MdLocationOn className="job-item-details-location-icon" />
+        <p className="job-item-details-location-description">{location}</p>
+        <BsBriefcaseFill className="job-item-details-location-icon" />
+        <p className="job-item-details-location-description">
+          {employmentType}
+        </p>
       </div>
     </li>
   )

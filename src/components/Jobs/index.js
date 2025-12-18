@@ -52,6 +52,29 @@ const salaryRangesList = [
     label: '40 LPA and above',
   },
 ]
+
+const locationList = [
+  {
+    locationId: 'Hyderabad',
+    label: 'Hyderabad',
+  },
+  {
+    locationId: 'Delhi',
+    label: 'Delhi',
+  },
+  {
+    locationId: 'Bangalore',
+    label: 'Bangalore',
+  },
+  {
+    locationId: 'Chennai',
+    label: 'Chennai',
+  },
+  {
+    locationId: 'Mumbai',
+    label: 'Mumbai',
+  },
+]
 const employmentTypeFilter = []
 
 class Jobs extends Component {
@@ -63,6 +86,7 @@ class Jobs extends Component {
     jobDetailsList: [],
     view: viewsConstants.initialView,
     profileView: viewsConstants.initialView,
+    locationFilter: [],
   }
 
   componentDidMount() {
@@ -123,6 +147,7 @@ class Jobs extends Component {
         title: eachJob.title,
       }))
       console.log(responseData)
+      console.log(jobDetailsList)
       if (total > 0) {
         this.setState({jobDetailsList, view: viewsConstants.successView})
       } else {
@@ -150,6 +175,20 @@ class Jobs extends Component {
     this.setState({salaryFilterString}, this.getJobDetails)
   }
 
+  onChangeLocation = event => {
+    const {locationFilter} = this.state
+    if (event.target.checked) {
+      this.setState(prevState => ({
+        locationFilter: [...prevState.locationFilter, event.target.value],
+      }))
+    } else {
+      const updatedLocationFilter = locationFilter.filter(
+        eachLocation => eachLocation !== event.target.value,
+      )
+      this.setState({locationFilter: updatedLocationFilter})
+    }
+  }
+
   onChangeSearchInput = event => {
     this.setState({searchInputString: event.target.value})
   }
@@ -164,18 +203,26 @@ class Jobs extends Component {
   }
 
   renderEmploymentSearchPanel = () => (
-    <div>
-      <h1>Type of Employment</h1>
-      <ul>
+    <div className="employment-search-panel-container">
+      <h1 className="employment-heading">Type of Employment</h1>
+      <ul className="employment-filters-list">
         {employmentTypesList.map(eachObj => (
-          <li key={eachObj.employmentTypeId}>
+          <li
+            key={eachObj.employmentTypeId}
+            className="employment-filter-each-list-item"
+          >
             <input
               type="checkbox"
               id={eachObj.employmentTypeId}
               value={eachObj.employmentTypeId}
               onChange={this.onChangeEmploymentFilter}
             />
-            <label htmlFor={eachObj.employmentTypeId}>{eachObj.label}</label>
+            <label
+              htmlFor={eachObj.employmentTypeId}
+              className="employment-filter-label"
+            >
+              {eachObj.label}
+            </label>
           </li>
         ))}
       </ul>
@@ -183,11 +230,14 @@ class Jobs extends Component {
   )
 
   renderSalaryRangeSearchPanel = () => (
-    <div>
-      <h1>Salary Range</h1>
-      <ul>
+    <div className="employment-search-panel-container">
+      <h1 className="employment-heading">Salary Range</h1>
+      <ul className="employment-filters-list">
         {salaryRangesList.map(eachSalaryObj => (
-          <li key={eachSalaryObj.salaryRangeId}>
+          <li
+            key={eachSalaryObj.salaryRangeId}
+            className="employment-filter-each-list-item"
+          >
             <input
               type="radio"
               id={eachSalaryObj.salaryRangeId}
@@ -195,8 +245,38 @@ class Jobs extends Component {
               onChange={this.onChangeSalary}
               value={eachSalaryObj.salaryRangeId}
             />
-            <label htmlFor={eachSalaryObj.salaryRangeId}>
+            <label
+              htmlFor={eachSalaryObj.salaryRangeId}
+              className="employment-filter-label"
+            >
               {eachSalaryObj.label}
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+
+  renderlocationSearchPanel = () => (
+    <div className="employment-search-panel-container">
+      <h1 className="employment-heading">Location</h1>
+      <ul className="employment-filters-list">
+        {locationList.map(eachLocation => (
+          <li
+            key={eachLocation.locationId}
+            className="employment-filter-each-list-item"
+          >
+            <input
+              type="checkbox"
+              id={eachLocation.locationId}
+              value={eachLocation.locationId}
+              onChange={this.onChangeLocation}
+            />
+            <label
+              htmlFor={eachLocation.locationId}
+              className="employment-filter-label"
+            >
+              {eachLocation.label}
             </label>
           </li>
         ))}
@@ -207,18 +287,20 @@ class Jobs extends Component {
   renderSearchInputPanel = () => {
     const {searchInputString} = this.state
     return (
-      <div>
+      <div className="search-input-container">
         <input
           type="search"
           placeholder="Search"
           value={searchInputString}
           onChange={this.onChangeSearchInput}
           id="search"
+          className="search-input"
         />
         <button
           type="button"
           data-testid="searchButton"
           onClick={this.getJobDetails}
+          className="search-button"
         >
           <BsSearch className="search-icon" />
         </button>
@@ -227,13 +309,13 @@ class Jobs extends Component {
   }
 
   getProfileContent = () => {
-    const {profileDetails, profileView} = this.state
+    const {profileView, profileDetails} = this.state
     let profileContent
     switch (profileView) {
       case viewsConstants.loadingView:
         profileContent = (
-          <div className="loader-container" data-testid="loader">
-            <Loader type="ThreeDots" color="black" height="50" width="50" />
+          <div className="profile-loader-container" data-testid="loader">
+            <Loader type="ThreeDots" color="white" height="50" width="50" />
           </div>
         )
         break
@@ -242,13 +324,16 @@ class Jobs extends Component {
         break
       case viewsConstants.profilefailureView:
         profileContent = (
-          <button
-            type="button"
-            onClick={this.onProfileRetry}
-            data-testid="profileRetryButton"
-          >
-            Retry
-          </button>
+          <div className="profile-failure-view-button-container">
+            <button
+              type="button"
+              onClick={this.onProfileRetry}
+              data-testid="profileRetryButton"
+              className="profile-retry-button"
+            >
+              Retry
+            </button>
+          </div>
         )
         break
       default:
@@ -261,17 +346,26 @@ class Jobs extends Component {
     <div>
       <Header />
       <div className="jobs-bottom-container">
-        <div>
-          {this.getProfileContent()}
-          <hr />
-          {this.renderEmploymentSearchPanel()}
-          <hr />
-          {this.renderSalaryRangeSearchPanel()}
-        </div>
-        <div>
+        <div className="search-panel-small-devices-container">
           {this.renderSearchInputPanel()}
-          <div className="loader-container" data-testid="loader">
-            <Loader type="ThreeDots" color="black" height="50" width="50" />
+        </div>
+        <div className="jobs-bottom-left-container">
+          {this.getProfileContent()}
+          <hr className="horizontal-line" />
+          {this.renderEmploymentSearchPanel()}
+          <hr className="horizontal-line" />
+          {this.renderSalaryRangeSearchPanel()}
+          <hr className="horizontal-line" />
+          {this.renderlocationSearchPanel()}
+        </div>
+        <div className="search-panel-and-loader-container">
+          <div className="search-panel-large-devices-container">
+            {this.renderSearchInputPanel()}
+          </div>
+          <div className="jobs-bottom-right-container">
+            <div className="loader-container" data-testid="loader">
+              <Loader type="ThreeDots" color="white" height="50" width="50" />
+            </div>
           </div>
         </div>
       </div>
@@ -279,24 +373,39 @@ class Jobs extends Component {
   )
 
   renderSuccessView = () => {
-    const {jobDetailsList} = this.state
+    const {jobDetailsList, locationFilter} = this.state
+    const updatedJobDetailsList =
+      locationFilter.length > 0
+        ? jobDetailsList.filter(eachJob =>
+            locationFilter.includes(eachJob.location),
+          )
+        : jobDetailsList
     return (
       <div>
         <Header />
         <div className="jobs-bottom-container">
-          <div>
-            {this.getProfileContent()}
-            <hr />
-            {this.renderEmploymentSearchPanel()}
-            <hr />
-            {this.renderSalaryRangeSearchPanel()}
-          </div>
-          <ul>
+          <div className="search-panel-small-devices-container">
             {this.renderSearchInputPanel()}
-            {jobDetailsList.map(eachJob => (
-              <JobItem details={eachJob} key={eachJob.id} />
-            ))}
-          </ul>
+          </div>
+          <div className="jobs-bottom-left-container">
+            {this.getProfileContent()}
+            <hr className="horizontal-line" />
+            {this.renderEmploymentSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderSalaryRangeSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderlocationSearchPanel()}
+          </div>
+          <div className="jobs-bottom-right-outer-container">
+            <div className="search-panel-large-devices-container">
+              {this.renderSearchInputPanel()}
+            </div>
+            <ul className="jobs-bottom-right-container">
+              {updatedJobDetailsList.map(eachJob => (
+                <JobItem details={eachJob} key={eachJob.id} />
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     )
@@ -306,16 +415,25 @@ class Jobs extends Component {
     <div>
       <Header />
       <div className="jobs-bottom-container">
-        <div>
-          {this.getProfileContent()}
-          <hr />
-          {this.renderEmploymentSearchPanel()}
-          <hr />
-          {this.renderSalaryRangeSearchPanel()}
-        </div>
-        <div>
+        <div className="search-panel-small-devices-container">
           {this.renderSearchInputPanel()}
-          <FailureView onRetry={this.onRetry} />
+        </div>
+        <div className="jobs-bottom-left-container">
+          {this.getProfileContent()}
+          <hr className="horizontal-line" />
+          {this.renderEmploymentSearchPanel()}
+          <hr className="horizontal-line" />
+          {this.renderSalaryRangeSearchPanel()}
+          <hr className="horizontal-line" />
+          {this.renderlocationSearchPanel()}
+        </div>
+        <div className="search-panel-and-jobs-container">
+          <div className="search-panel-large-devices-container">
+            {this.renderSearchInputPanel()}
+          </div>
+          <div className="jobs-bottom-right-container">
+            <FailureView onRetry={this.onRetry} />
+          </div>
         </div>
       </div>
     </div>
@@ -327,24 +445,36 @@ class Jobs extends Component {
       <div>
         <Header />
         <div className="jobs-bottom-container">
-          <div>
-            <button
-              type="button"
-              onClick={this.onProfileRetry}
-              data-testid="profileRetryButton"
-            >
-              Retry
-            </button>
-            <hr />
-            {this.renderEmploymentSearchPanel()}
-            <hr />
-            {this.renderSalaryRangeSearchPanel()}
-          </div>
-          <div>
+          <div className="search-panel-small-devices-container">
             {this.renderSearchInputPanel()}
-            {jobDetailsList.map(eachJob => (
-              <JobItem details={eachJob} key={eachJob.id} />
-            ))}
+          </div>
+          <div className="jobs-bottom-left-container">
+            <div className="profile-failure-view-button-container">
+              <button
+                type="button"
+                onClick={this.onProfileRetry}
+                data-testid="profileRetryButton"
+                className="profile-retry-button"
+              >
+                Retry
+              </button>
+            </div>
+            <hr className="horizontal-line" />
+            {this.renderEmploymentSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderSalaryRangeSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderlocationSearchPanel()}
+          </div>
+          <div className="jobs-bottom-right-outer-container">
+            <div className="search-panel-large-devices-container">
+              {this.renderSearchInputPanel()}
+            </div>
+            <div className="jobs-bottom-right-container">
+              {jobDetailsList.map(eachJob => (
+                <JobItem details={eachJob} key={eachJob.id} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -357,22 +487,34 @@ class Jobs extends Component {
       <div>
         <Header />
         <div className="jobs-bottom-container">
-          <div>
-            <Profile profileDetails={profileDetails} />
-            <hr />
-            {this.renderEmploymentSearchPanel()}
-            <hr />
-            {this.renderSalaryRangeSearchPanel()}
-          </div>
-          <div>
+          <div className="search-panel-small-devices-container">
             {this.renderSearchInputPanel()}
-            <div>
-              <img
-                src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
-                alt="no jobs"
-              />
-              <h1>No Jobs Found</h1>
-              <p>We could not find any jobs. Try other filters</p>
+          </div>
+          <div className="jobs-bottom-left-container">
+            <Profile profileDetails={profileDetails} />
+            <hr className="horizontal-line" />
+            {this.renderEmploymentSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderSalaryRangeSearchPanel()}
+            <hr className="horizontal-line" />
+            {this.renderlocationSearchPanel()}
+          </div>
+          <div className="jobs-bottom-right-outer-container">
+            <div className="search-panel-large-devices-container">
+              {this.renderSearchInputPanel()}
+            </div>
+            <div className="jobs-bottom-right-container">
+              <div className="no-jobs-view-container">
+                <img
+                  src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+                  alt="no jobs"
+                  className="no-jobs-found-image"
+                />
+                <h1 className="no-jobs-found-heading">No Jobs Found</h1>
+                <p className="no-jobs-found-description">
+                  We could not find any jobs. Try other filters
+                </p>
+              </div>
             </div>
           </div>
         </div>
